@@ -28,9 +28,8 @@ public class monitor {
         for(int i =0; i<NoGroups; i++){
            Thread[] t = threadsInGroup(g[i]);
             int threadsInGroup=t.length;
-            for(int a=0; a<threadsInGroup; a++){
-                System.out.println(t[a].getName());
-            }
+            DisplayThread(t);
+
         }
 
     }
@@ -70,7 +69,7 @@ public class monitor {
         }
     }
     /*So far only Displays ID, Name and if thread is Daemon or not*/
-    public void DisplayThreads(Thread list[]){
+    public void DisplayThread(Thread list[]){
 
         int Count = list.length;
 
