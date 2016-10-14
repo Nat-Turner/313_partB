@@ -10,13 +10,18 @@ public class monitor {
         ThreadGroup root = m.getRoot();
         ThreadGroup[] groups = m.getAllGroups();
 
+        ThreadGroup[] groupsAndRoot = new ThreadGroup[groups.length+1];  //putting the root and all other groups into same array
+        groupsAndRoot[0]=m.getRoot();                                    // put into a method to make it more tidy
+        System.arraycopy(groups,0,groupsAndRoot,1,groups.length);        //
+
+
         System.out.println("All Active Groups");
-        System.out.println(m.getRoot().getName());
-        m.printGroup(groups);
+
+        m.printGroup(groupsAndRoot);
 
         System.out.println("");
         System.out.println("ALL Active Threads :");
-        m.getAllThreads(groups);
+        m.getAllThreads(groupsAndRoot);
 
 
 
