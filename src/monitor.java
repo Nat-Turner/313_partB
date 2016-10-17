@@ -84,6 +84,7 @@ public class monitor {
 
         return groupsAndRoot; // now includes the root
     }
+
     public void printGroup(ThreadGroup[] g){
         int count  = g.length;
         int i =0;
@@ -94,7 +95,7 @@ public class monitor {
             i++;
         }
     }
-    /*So far only Displays ID, Name and if thread is Daemon or not*/
+    /*Displays each Thread Group once and ID, Name,Priority, State and if thread is Daemon or not*/
     public void DisplayThread(Thread list[]){
 
         int Count = list.length;
@@ -118,18 +119,5 @@ public class monitor {
             i++;
         }
     }
-    public void ThreadGroup(Thread list[]){
-        int Count = list.length;
-        for (int i = 0; i < Count; i++) {
-            System.out.println("The Thread "+list[i].getName()+" belongs to group :" + list[i].getThreadGroup());
-        }
-    }
-    public Thread[] activeThreads(){
-        int Count = Thread.activeCount();
-        System.out.println("number of active Threads " + Count);
-
-        Thread list[] = new Thread[Count];
-        Thread.enumerate(list);
-        return list;
-    }
+  
 }
