@@ -13,13 +13,14 @@ public class monitor {
         ThreadGroup testGroup =new ThreadGroup("ThreadGroup1") ;
         Thread th1 = new Thread(testGroup, "JAVA");
         Thread th2 = new Thread(testGroup, "JDBC");
-        Thread th3 = new Thread(testGroup, "EJB");
-        Thread th4 = new Thread(testGroup, "XML");
 
         th1.start();
         th2.start();
-        th3.start();
-        th4.start();
+
+        ThreadGroup testGroup1 = new ThreadGroup(testGroup,"B_G");
+        Thread th5 = new Thread(testGroup1,"ggg");
+
+        th5.start();
 
         ThreadGroup[] groups = m.getAllGroups();
         System.out.println("All Active Groups");
@@ -119,5 +120,5 @@ public class monitor {
             i++;
         }
     }
-  
+
 }
