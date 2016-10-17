@@ -8,20 +8,26 @@ public class monitor {
     public static void main(String[] args) {
         monitor m = new monitor();
         ThreadGroup root = m.getRoot();
+
+        /*testing by adding some threads and a threadGroup*/
+        ThreadGroup testGroup =new ThreadGroup("ThreadGroup1") ;
+        Thread th1 = new Thread(testGroup, "JAVA");
+        Thread th2 = new Thread(testGroup, "JDBC");
+        Thread th3 = new Thread(testGroup, "EJB");
+        Thread th4 = new Thread(testGroup, "XML");
+
+        th1.start();
+        th2.start();
+        th3.start();
+        th4.start();
+
         ThreadGroup[] groups = m.getAllGroups();
-
-        ThreadGroup[] groupsAndRoot = new ThreadGroup[groups.length+1];  //putting the root and all other groups into same array
-        groupsAndRoot[0]=m.getRoot();                                    // put into a method to make it more tidy
-        System.arraycopy(groups,0,groupsAndRoot,1,groups.length);        //
-
-
         System.out.println("All Active Groups");
-
-        m.printGroup(groupsAndRoot);
-
+        m.printGroup(groups);
         System.out.println("");
+
         System.out.println("ALL Active Threads :");
-        m.getAllThreads(groupsAndRoot);
+        m.getAllThreads(groups);
 
 
 
@@ -29,20 +35,20 @@ public class monitor {
 
 
     public void getAllThreads(ThreadGroup[] g){
-        int NoGroups=g.length;
-        for(int i =0; i<NoGroups; i++){
-           Thread[] t = threadsInGroup(g[i]);
-            int threadsInGroup=t.length;
+        int i=0;
+            Thread[] t = threadsInGroup(getRoot());
             DisplayThread(t);
+            i++;
 
-        }
 
     }
+
     public Thread[] threadsInGroup(ThreadGroup g){
         int threadcount = g.activeCount();
+        threadcount *=2;
         Thread[] threads = new Thread[threadcount];
         g.enumerate(threads);
-        return(threads);
+        return(java.util.Arrays.copyOf(threads,threadcount));
     }
 
 
@@ -60,26 +66,48 @@ public class monitor {
 
     public ThreadGroup[] getAllGroups(){
         ThreadGroup root = getRoot();
+
         int numberOfGroups = root.activeGroupCount();
+
+        numberOfGroups =numberOfGroups*2;
+
         ThreadGroup[] groups = new ThreadGroup[numberOfGroups];
 
         root.enumerate(groups,true);
 
-        return groups; // doesnt include the root
+
+        ThreadGroup[] groupsAndRoot = new ThreadGroup[groups.length+1];  //putting the root and all other groups into same array
+        groupsAndRoot[0]=root;                                          // put into a method to make it more tidy
+        System.arraycopy(groups,0,groupsAndRoot,1,groups.length);
+
+
+
+        return groupsAndRoot; // now includes the root
     }
     public void printGroup(ThreadGroup[] g){
         int count  = g.length;
-        for(int i=0; i<count;i++) {
+        int i =0;
+
+
+        while(g[i]!=null) {
             System.out.println(g[i].getName());
+            i++;
         }
     }
     /*So far only Displays ID, Name and if thread is Daemon or not*/
     public void DisplayThread(Thread list[]){
 
         int Count = list.length;
+        int i=0;
+        ThreadGroup currentGroup = null;
 
-
-        for (int i = 0; i < Count; i++) {
+        while (list[i]!=null) {
+            if(currentGroup!=list[i].getThreadGroup()){
+                System.out.println("");
+                System.out.println("Thread Group :"+list[i].getThreadGroup().getName());
+                System.out.println("");
+                currentGroup=list[i].getThreadGroup();
+            }
             System.out.println("Thread ID:"+list[i].getId());
             System.out.println("Thread name: "+list[i].getName());
             System.out.println("The Thread Priority is: "+ list[i].getPriority());
@@ -87,7 +115,7 @@ public class monitor {
             System.out.println("Is Thread a Daemon: "+list[i].isDaemon());
 
             System.out.println("");
-
+            i++;
         }
     }
     public void ThreadGroup(Thread list[]){
