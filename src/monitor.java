@@ -1,56 +1,86 @@
+
+
 import java.lang.ThreadGroup;
 import java.lang.Thread;
-import java.util.ArrayList;
 
 public class monitor {
 
 
     public static void main(String[] args) {
+
         monitor m = new monitor();
         ThreadGroup root = m.getRoot();
 
         /*testing by adding some threads and a threadGroup*/
         ThreadGroup testGroup =new ThreadGroup("ThreadGroup1") ;
+
         Thread th1 = new Thread(testGroup, "JAVA");
         Thread th2 = new Thread(testGroup, "JDBC");
 
+        long delay =2000;
         th1.start();
+
         th2.start();
 
+        //System.out.println(th1.getThreadGroup().getName());
+        // System.out.println(th2.getThreadGroup().getName());
+        // System.out.println(testGroup.activeCount());
         ThreadGroup testGroup1 = new ThreadGroup(testGroup,"B_G");
         Thread th5 = new Thread(testGroup1,"ggg");
-
+        Thread th6 = new Thread(testGroup1,"sadfds");
         th5.start();
+        th6.start();
 
-        ThreadGroup[] groups = m.getAllGroups();
+        ThreadGroup testGroup2 =  new ThreadGroup(testGroup,"B_Gr");
+        Thread th7 = new Thread(testGroup2,"gdgg");
+        Thread th8 = new Thread(testGroup2,"df");
+        th7.start();
+        th8.start();
+        // ThreadGroup[] groups = m.getAllGroups();
         System.out.println("All Active Groups");
-        m.printGroup(groups);
+        // m.printGroup(groups);
         System.out.println("");
 
-        System.out.println("ALL Active Threads :");
-        m.getAllThreads(groups);
+        // System.out.println("ALL Active Threads :");
 
+        m.lauchMonitor();
 
 
     }
 
 
-    public void getAllThreads(ThreadGroup[] g){
+    public void lauchMonitor(){
+        ThreadGroup[] groups = getAllGroups();
         int i=0;
-            Thread[] t = threadsInGroup(getRoot());
-            DisplayThread(t);
+        while(groups[i]!=null){
+            System.out.println("Thread Group "+groups[i].getName());
+            System.out.println("");
+            Thread[] j=getallthreadsInGroup(groups[i]);
+            DisplayThread(j);
             i++;
-
+        }
 
     }
 
-    public Thread[] threadsInGroup(ThreadGroup g){
-        int threadcount = g.activeCount();
-        threadcount *=2;
+
+
+
+
+    public Thread[] getallthreadsInGroup( ThreadGroup g){
+        ThreadGroup root = g;
+        int threadcount = root.activeCount();
+        int n;
         Thread[] threads = new Thread[threadcount];
-        g.enumerate(threads);
-        return(java.util.Arrays.copyOf(threads,threadcount));
+        do{
+            threadcount *=2;
+
+            n=root.enumerate(threads,false);
+            //System.out.println("num"+n);
+        }while(n>=threadcount);
+
+        return(threads);
     }
+
 
 
     public ThreadGroup getRoot(){
@@ -80,7 +110,7 @@ public class monitor {
         ThreadGroup[] groupsAndRoot = new ThreadGroup[groups.length+1];  //putting the root and all other groups into same array
         groupsAndRoot[0]=root;                                          // put into a method to make it more tidy
         System.arraycopy(groups,0,groupsAndRoot,1,groups.length);
-
+        // System.arraycopy(groupsAndRoot);
 
 
         return groupsAndRoot; // now includes the root
@@ -97,28 +127,25 @@ public class monitor {
         }
     }
     /*Displays each Thread Group once and ID, Name,Priority, State and if thread is Daemon or not*/
-    public void DisplayThread(Thread list[]){
+    public void DisplayThread(Thread list[]) {
 
         int Count = list.length;
-        int i=0;
-        ThreadGroup currentGroup = null;
 
-        while (list[i]!=null) {
-            if(currentGroup!=list[i].getThreadGroup()){
-                System.out.println("");
-                System.out.println("Thread Group :"+list[i].getThreadGroup().getName());
-                System.out.println("");
-                currentGroup=list[i].getThreadGroup();
-            }
-            System.out.println("Thread ID:"+list[i].getId());
-            System.out.println("Thread name: "+list[i].getName());
-            System.out.println("The Thread Priority is: "+ list[i].getPriority());
+        int i = 0;
+
+
+        while ((i >= 0) && (i < Count )&&(list[i] != null)) {
+
+            System.out.println("Thread ID:" + list[i].getId());
+            System.out.println("Thread name: " + list[i].getName());
+            System.out.println("The Thread Priority is: " + list[i].getPriority());
             System.out.println("The Thread state is: " + list[i].getState());
-            System.out.println("Is Thread a Daemon: "+list[i].isDaemon());
+            System.out.println("Is Thread a Daemon: " + list[i].isDaemon());
 
             System.out.println("");
             i++;
+
+
         }
     }
-
 }
